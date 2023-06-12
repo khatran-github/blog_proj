@@ -1,0 +1,18 @@
+{% extends 'blogs/base.html' %}
+{% load django_bootstrap5 %}
+
+{% block title %}
+    <title>Sign up</title>
+{% endblock title %}
+
+{% block header %}
+    <h1>Sign up</h1>
+{% endblock header %}
+
+{% block content %}
+    <form action="{% url 'accounts:register' %}" method="post">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        {% bootstrap_button button_type='submit' content='Sign up' %}
+    </form>
+{% endblock content %}

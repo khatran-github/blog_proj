@@ -1,0 +1,66 @@
+{% extends 'blogs/base.html' %}
+
+{% block title %}
+    <title>{{ author }}</title>
+{% endblock title %}
+
+{% block header %}
+    <div class="d-flex align-items-end">
+        <h1 class="text-break me-auto">@{{ author }}</h1>
+        <span>{{ entries|length }} entr{{ entries|length|pluralize:'y,ies' }}</span>
+        {% if user.username == author %}
+        <div class="dropdown ms-3">
+            <button type="button" class="btn btn-sm btn-outline-primary fw-semibold" data-bs-toggle="dropdown" aria-expanded="false">Filter</button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'blogs:user_entries' author %}?filter=public">Public</a></li>
+                <li><a class="dropdown-item" href="{% url 'blogs:user_entries' author %}?filter=private">Private</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{% url 'blogs:user_entries' author %}">All</a></li>
+            </ul>
+            <a href="{% url 'blogs:user_entries' author %}"></a>
+        </div>
+        {% endif %}
+    </div>
+{% endblock header %}
+
+{% block content %}
+    {% for entry in entries %}
+        <article>
+            <div class="card border-0 border-bottom mb-4">
+                <div class="card-header border-0 bg-transparent">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-clock me-1"></i><small class="text-secondary" title="{{ entry.date_added|date:'M d, Y H:i' }}">{{ entry.date_added|timesince }} ago</small>
+                            {% if user.username == author %}
+                                <div class="btn-group btn-group-sm ms-auto">
+                                    <a href="{% url 'blogs:edit_entry' entry.slug %}" class="btn btn-outline-secondary fw-semibold">Edit</a>
+                                    <form class="btn btn-outline-secondary p-0" action="{% url 'blogs:delete_entry' entry.slug %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="fw-semibold text-reset border-0 bg-transparent px-2 py-1">Delete</button>
+                                    </form>
+                                </div>
+                            {% endif %}
+                    </div>
+                </div>
+                <div class="card-body py-2">
+                    <h4 class="card-title">
+                        <a href="{% url 'blogs:entry_detail' entry.slug %}" class="hover-link text-reset">{{ entry.title }}</a>
+                    </h4>
+                    <div class="card-text">{{ entry.text|truncatechars:300|linebreaks }}</div>
+                </div>
+                <div class="card-footer border-0 bg-transparent">
+                    <a href="{% url 'blogs:topic' entry.topic.slug %}"
+                    class="badge text-decoration-none text-black text-opacity-75 bg-secondary bg-opacity-10">{{ entry.topic }}</a>
+                    {% if user.username == author %}
+                        {% if entry.public == True %}
+                            <span class="badge text-bg-primary">Public</span>
+                        {% else %}
+                            <span class="badge text-bg-warning">Private</span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </article>
+    {% empty %}
+        <h2>No entries have been added.</h2>
+    {% endfor %}
+{% endblock content %}

@@ -1,0 +1,37 @@
+{% extends 'blogs/base.html' %}
+
+{% block title %}
+    <title>{{ topic }}</title>
+{% endblock title %}
+
+{% block header %}
+    <div class="d-flex align-items-end">
+        <h1>{{ topic }}</h1>
+        <a href="{% url 'blogs:new_entry' topic.slug %}" class="btn btn-outline-primary btn-sm fw-semibold ms-auto">Add blog</a>
+    </div>
+{% endblock header %}
+
+{% block content %}
+    {% for entry in entries %}
+        <article>
+            <div class="card border-0 border-bottom mb-4">
+                <div class="card-header border-0 bg-transparent">
+                    By <a href="{% url 'blogs:user_entries' entry.owner.username %}" class="fw-semibold text-black">{{ entry.owner.username }}</a>
+                    <i class="bi bi-clock ms-3 me-1"></i><small class="text-secondary" title="{{ entry.date_added|date:'M d, Y H:i' }}">{{ entry.date_added|timesince }} ago</small>
+                </div>
+                <div class="card-body py-2">
+                    <h4 class="card-title">
+                        <a href="{% url 'blogs:entry_detail' entry.slug %}" class="hover-link text-reset">{{ entry.title }}</a>                            
+                    </h4>
+                    <div class="card-text">{{ entry.text|truncatechars:300|linebreaks }}</div>
+                </div>
+                <div class="card-footer border-0 bg-transparent">
+                    <a href="{% url 'blogs:topic' entry.topic.slug %}"
+                    class="badge text-decoration-none text-black text-opacity-75 bg-secondary bg-opacity-10">{{ entry.topic }}</a>
+                </div>
+            </div>
+        </article>
+    {% empty %}
+        <h3>No entries have been added.</h3>
+    {% endfor %}
+{% endblock content %}

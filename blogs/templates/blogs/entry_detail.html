@@ -1,0 +1,23 @@
+{% extends 'blogs/base.html' %}
+
+{% block title %}
+    <title>{{ entry.title }}</title>
+{% endblock title %}
+
+{% block header %}
+    <h1>{{ entry.title }}</h1>
+    <div class="d-flex">
+        <span>By <a class="fw-semibold text-black" href="{% url 'blogs:user_entries' entry.owner.username %}">{{ entry.owner.username }}</a></span>
+        <span class="ms-3"><i class="bi bi-calendar-date me-1"></i><small>{{ entry.date_added|date:'M d, Y H:i' }}</small></span>
+        {% if entry.date_modified != entry.date_added %}
+            <span class="ms-3"><small><span class="fw-semibold">Updated on</span> {{ entry.date_modified|date:'M d, Y H:i' }}</small></span>
+        {% endif %}
+    </div>
+{% endblock header %}
+
+{% block content %}
+    {% if entry.public == False %}
+        <div class="alert alert-warning" role="alert">This blog is in private mode. Only the author user can access this blog.</div>
+    {% endif %}
+    {{ entry.text|linebreaks }}
+{% endblock content%}

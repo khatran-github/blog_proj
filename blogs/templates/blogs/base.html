@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% load django_bootstrap5 %}
+        {% bootstrap_css %}
+        {% bootstrap_javascript %}
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+        <style>
+            .hover-link:link {
+                text-decoration: none;
+            }
+            .hover-link:hover {
+                text-decoration: underline;
+            }
+        </style>
+        {% block title %}{% endblock title %}
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-md navbar-light sticky-top bg-white mb-4 py-3 border-bottom">
+            <div class="container-fluid">
+                <a class="navbar-brand text-primary fw-semibold" href="{% url 'blogs:index' %}">The Blog</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse"
+                aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold" href="{% url 'blogs:topics' %}">Topics</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold" href="{% url 'blogs:about' %}">About</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav ms-auto">
+                        {% if user.is_authenticated %}
+                            <li class="nav-item mx-2">
+                                <div class="dropdown">
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                                        {{ user.username }}
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-end">
+                                        <a class="dropdown-item" href="{% url 'blogs:user_entries' user.username %}">My blogs</a>
+                                        <hr class="dropdown-divider">
+                                        <form class="dropdown-item px-0" action="{% url 'accounts:logout' %}" method="post">
+                                            {% csrf_token %}
+                                            <button type="submit" class="text-start border-0 bg-transparent px-3 w-100">Logout</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </li>
+                        {% else %}
+                            <li class="nav-item ms-2">
+                                <a class="nav-link fw-semibold" href="{% url 'accounts:login' %}">Log in</a>
+                            </li>
+                            <li class="nav-item ms-2">
+                                <a class="nav-link fw-semibold" href="{% url 'accounts:register' %}">Register</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <main style="max-width: 960px; margin: auto;">
+            <div class="container">
+                <div class="pb-2 mb-3 border-bottom">
+                    {% block header %}{% endblock header %}
+                </div>
+                <div>
+                    {% block content %}{% endblock content %}
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

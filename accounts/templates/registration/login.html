@@ -1,0 +1,19 @@
+{% extends 'blogs/base.html' %}
+{% load django_bootstrap5 %}
+
+{% block title %}
+    <title>Log in</title>
+{% endblock title %}
+
+{% block header %}
+    <h1>Log in to The Blog</h1>
+{% endblock header %}
+
+{% block content %}
+    <form action="{% url 'accounts:login' %}" method="post">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <input type="hidden" name="next" value="{{ next }}">
+        {% bootstrap_button button_type='submit' content='Log in' %}
+    </form>
+{% endblock content %}

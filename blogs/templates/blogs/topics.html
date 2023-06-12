@@ -1,0 +1,19 @@
+{% extends 'blogs/base.html' %}
+
+{% block title %}
+    <title>Topics</title>
+{% endblock title %}
+
+{% block header %}
+    <h1>Topics</h1>
+{% endblock header %}
+
+{% block content %}
+    <ul class="list-group list-group-flush">
+        {% for topic in topics %}
+            <li class="list-group-item"><a href="{% url 'blogs:topic' topic.slug %}" class="text-black text-opacity-75 fs-4 text-decoration-none">{{ topic }}</a></li>
+        {% empty %}
+            <li class="list-group-item">No topics have been added.</li>
+        {% endfor %}
+    </ul>
+{% endblock content %}
